@@ -75,6 +75,11 @@ public class PlayerMovement : MonoBehaviour
                 {
                     // Debug.Log("\nI'm looking at " + hit.transform.name);
                     Instantiate(bulletImpact, hit.point, transform.rotation);
+
+                    if (hit.transform.tag == "Enemy") {
+                        Debug.Log(hit.transform.parent);
+                        hit.transform.GetComponent<EnemyController>().TakeDamage();
+                    }
                     
                 }
                 else

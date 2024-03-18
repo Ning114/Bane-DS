@@ -20,9 +20,9 @@ public class ammo : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        Debug.Log("\nDetected collision with ammoBox");
+        // Debug.Log("\nDetected collision with ammoBox");
         if (other.tag == "Player") {
-            Debug.Log("\nDetected Player, consuming ammo!");
+            // Debug.Log("\nDetected Player, consuming ammo!");
             PlayerMovement.instance.currentAmmo += ammoAmount;
             Destroy(gameObject);
         }
