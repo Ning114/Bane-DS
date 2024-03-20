@@ -24,6 +24,7 @@ public class ammo : MonoBehaviour
         if (other.tag == "Player") {
             // Debug.Log("\nDetected Player, consuming ammo!");
             PlayerMovement.instance.AddAmmo(ammoAmount);
+            AudioController.instance.playAmmoPickup();
             Destroy(gameObject);
         }
     }

@@ -127,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
                     currentAmmo--;
                     updateAmmoText();
                     gunAnim.SetTrigger("Shoot");
+                    AudioController.instance.playGunShot();
                 }
             }
 
@@ -152,6 +153,8 @@ public class PlayerMovement : MonoBehaviour
             deadScreen.SetActive(true);
             hasDied = true;
         }
+
+        AudioController.instance.playPlayerHurt();
 
     }
 

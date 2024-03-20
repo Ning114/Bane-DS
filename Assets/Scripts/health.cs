@@ -23,6 +23,7 @@ public class health : MonoBehaviour
         if (other.tag == "Player") {
 
             PlayerMovement.instance.AddHealth(healAmount);
+            AudioController.instance.playHealthPickup();
             Destroy(gameObject);
         }
     }
