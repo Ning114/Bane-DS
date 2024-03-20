@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
     public GameObject bulletImpact;
 
     public Animator gunAnim;
+
+    public Animator playerMovementAnim;
     public int currentAmmo;
     // Start is called before the first frame update
 
@@ -55,9 +57,12 @@ public class PlayerMovement : MonoBehaviour
     private void updateHealthText()
     {
 
-        if (currHealth <= 0) {
+        if (currHealth <= 0)
+        {
             healthText.text = "0%";
-        } else {
+        }
+        else
+        {
             healthText.text = currHealth.ToString() + "%";
         }
     }
@@ -125,6 +130,15 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
+            if (moveInput != Vector2.zero)
+            {
+                playerMovementAnim.SetBool("isMoving", true);
+            }
+            else
+            {
+                playerMovementAnim.SetBool("isMoving", false);
+            }
+
         }
     }
 
@@ -148,7 +162,8 @@ public class PlayerMovement : MonoBehaviour
         updateHealthText();
     }
 
-    public void AddAmmo(int amount) {
+    public void AddAmmo(int amount)
+    {
         currentAmmo += amount;
         updateAmmoText();
     }
