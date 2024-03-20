@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
 
 
+
+
     //Vector for player movement (wasd)
     private Vector2 moveInput;
 
@@ -28,67 +30,98 @@ public class PlayerMovement : MonoBehaviour
     public int currentAmmo;
     // Start is called before the first frame update
 
-    private void Awake() {
+    public int currHealth;
+    public int maxHealth;
+    public GameObject deadScreen;
+    private bool hasDied;
+
+    private void Awake()
+    {
 
         instance = this;
     }
 
     void Start()
     {
+        currHealth = maxHealth;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        // wasd movement 
-        moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        // fixes horizontal movement to move horizontally relative to where we are facing
-        Vector3 moveHorizontal = transform.up * -moveInput.x;
-        // fixes vertical movement to move horizontally relative to where we are facing
-        Vector3 moveVertical = transform.right * moveInput.y;
-        playerRigidBody.velocity = (moveHorizontal + moveVertical) * moveSpeed;
-
-
-        // camera movement
-        mouseInput = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y")) * mouseSens;
-
-        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x,
-            transform.eulerAngles.y, transform.rotation.eulerAngles.z - mouseInput.x);
-
-        playerCam.transform.localRotation = Quaternion.Euler(playerCam.transform.localRotation.eulerAngles +
-                                                   new Vector3(0f, mouseInput.y, 0f));
-
-
-        // shooting
-
-        if (Input.GetMouseButtonDown(0))
+        if (!hasDied)
         {
-            if (currentAmmo > 0)
+
+
+            // wasd movement 
+            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            // fixes horizontal movement to move horizontally relative to where we are facing
+            Vector3 moveHorizontal = transform.up * -moveInput.x;
+            // fixes vertical movement to move horizontally relative to where we are facing
+            Vector3 moveVertical = transform.right * moveInput.y;
+            playerRigidBody.velocity = (moveHorizontal + moveVertical) * moveSpeed;
+
+
+            // camera movement
+            mouseInput = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y")) * mouseSens;
+
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x,
+                transform.eulerAngles.y, transform.rotation.eulerAngles.z - mouseInput.x);
+
+            playerCam.transform.localRotation = Quaternion.Euler(playerCam.transform.localRotation.eulerAngles +
+                                                       new Vector3(0f, mouseInput.y, 0f));
+
+
+            // shooting
+
+            if (Input.GetMouseButtonDown(0))
             {
-                Ray ray = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-                RaycastHit hit;
-
-                // if we recieve info outputted into hit, then something was hit.
-                if (Physics.Raycast(ray, out hit))
+                if (currentAmmo > 0)
                 {
-                    // Debug.Log("\nI'm looking at " + hit.transform.name);
-                    Instantiate(bulletImpact, hit.point, transform.rotation);
+                    Ray ray = playerCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+                    RaycastHit hit;
 
-                    if (hit.transform.tag == "Enemy") {
-                        Debug.Log(hit.transform.parent);
-                        hit.transform.GetComponent<EnemyController>().TakeDamage();
+                    // if we recieve info outputted into hit, then something was hit.
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        // Debug.Log("\nI'm looking at " + hit.transform.name);
+                        Instantiate(bulletImpact, hit.point, transform.rotation);
+
+                        if (hit.transform.tag == "Enemy")
+                        {
+                            Debug.Log(hit.transform.parent);
+                            hit.transform.GetComponent<EnemyController>().TakeDamage();
+                        }
+
                     }
-                    
+                    else
+                    {
+                        // Debug.Log("\nI'm looking at nothing");
+                    }
+                    currentAmmo--;
+                    gunAnim.SetTrigger("Shoot");
                 }
-                else
-                {
-                    // Debug.Log("\nI'm looking at nothing");
-                }
-                currentAmmo--;
-                gunAnim.SetTrigger("Shoot");
             }
+
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currHealth -= damage;
+        if (currHealth == 0)
+        {
+            deadScreen.SetActive(true);
+            hasDied = true;
+        }
+
+    }
+
+    public void AddHealth(int amount) {
+        currHealth += amount;
+        if (currHealth > maxHealth) {
+            currHealth = maxHealth;
         }
     }
 }
