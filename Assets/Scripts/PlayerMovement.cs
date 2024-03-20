@@ -47,12 +47,12 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         currHealth = maxHealth;
-        updateHealth();
-        updateAmmo();
+        updateHealthText();
+        updateAmmoText();
 
     }
 
-    private void updateHealth()
+    private void updateHealthText()
     {
 
         if (currHealth <= 0) {
@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void updateAmmo()
+    private void updateAmmoText()
     {
         ammoText.text = currentAmmo.ToString();
     }
@@ -120,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
                         // Debug.Log("\nI'm looking at nothing");
                     }
                     currentAmmo--;
-                    updateAmmo();
+                    updateAmmoText();
                     gunAnim.SetTrigger("Shoot");
                 }
             }
@@ -131,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currHealth -= damage;
-        updateHealth();
+        updateHealthText();
 
         if (currHealth <= 0)
         {
@@ -144,12 +144,13 @@ public class PlayerMovement : MonoBehaviour
     public void AddHealth(int amount)
     {
         currHealth += amount;
-        updateHealth();
+        if (currHealth > maxHealth) currHealth = maxHealth;
+        updateHealthText();
+    }
 
-        if (currHealth > maxHealth)
-        {
-            currHealth = maxHealth;
-        }
+    public void AddAmmo(int amount) {
+        currentAmmo += amount;
+        updateAmmoText();
     }
 
 
